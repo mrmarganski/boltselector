@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRC Bolt Selection Tool</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 0.5rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.5;
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        
+        .app-description {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--gray-700);
+        }
+        
+        .app-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .app-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 1.25rem;
+            background-color: var(--primary);
+            margin-right: 0.75rem;
+            border-radius: 2px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            background-color: var(--gray-50);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn svg {
+            margin-right: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        
+        .material-stack {
+            min-height: 200px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background-color: var(--gray-50);
+            transition: all 0.2s ease;
+        }
+        
+        .material-stack:hover {
+            box-shadow: var(--shadow);
+        }
+        
+        .material-stack-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--gray-700);
+            font-style: italic;
+        }
+        
+        .material-item {
+            width: 80%;
+            margin: 0 auto;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 0.25rem;
+            margin-bottom: 2px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .material-item:hover {
+            transform: scale(1.02);
+            z-index: 5;
+        }
+        
+        .material-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        
+        .material-thickness {
+            font-size: 0.75rem;
+            color: var(--gray-700);
+            margin-top: 0.25rem;
+        }
+        
+        .bolt-visualization {
+            position: absolute;
+            width: 8px;
+            background-color: #888;
+            border-radius: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            transition: height 0.3s ease;
+        }
+        
+        .bolt-head {
+            width: 18px;
+            height: 10px;
+            background-color: #666;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -10px;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .bolt-nut {
+            width: 18px;
+            height: 10px;
+            background-color: #666;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -10px;
+            border-radius: 0 0 3px 3px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 24px;
+            background-color: var(--gray-200);
+            border-radius: 0.375rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.75s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        .tooltip {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gray-800);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+            transform: translateX(-50%) translateY(5px);
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--gray-800);
+        }
+        
+        .progress-container:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .results-table td {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .results-table td:first-child {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .results-table td:last-child {
+            text-align: right;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        
+        .status-safe {
+            color: var(--success);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .status-unsafe {
+            color: var(--danger);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .status-safe::before, .status-unsafe::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-safe::before {
+            background-color: var(--success);
+        }
+        
+        .status-unsafe::before {
+            background-color: var(--danger);
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            align-items: center;
+        }
+        
+        .stack-info {
+            background-color: var(--gray-100);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .stack-info span {
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Added for delete buttons on material items */
+        .delete-material {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        
+        .material-item:hover .delete-material {
+            opacity: 1;
+        }
+        
+        /* Material badge with color preview */
+        .material-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--gray-100);
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .color-preview {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 6px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: slideIn 0.3s forwards;
+        }
+        
+        /* Toggle switch for washers */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        /* Form row for side-by-side inputs */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Hardware options section */
+        .hardware-options {
+            background-color: rgba(59, 130, 246, 0.05);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hardware-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .hardware-title svg {
+            margin-right: 0.5rem;
+        }
+        
+        /* Bolt recommendation visualization improvements */
+        .bolt-recommendation {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 0.375rem;
+        }
+        
+        .bolt-recommendation-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        
+        .bolt-recommendation-title svg {
+            margin-right: 0.5rem;
+        }
+        
+        .bolt-specification {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0.5rem 0 1.25rem;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background-color: rgba(59, 130, 246, 0.15);
+            border-radius: 0.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .bolt-recommendation-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+        }
+        
+        /* Improved bolt visualization */
+        .bolt-visual-container {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .bolt-visual {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 120px;
+        }
+        
+        .bolt-visual-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .bolt-head-visual {
+            width: 35px;
+            height: 16px;
+            background-color: #555;
+            border-radius: 3px 3px 0 0;
+            position: relative;
+        }
+        
+        .bolt-shaft-visual {
+            width: 12px;
+            background-color: #777;
+            position: relative;
+            border-radius: 0 0 2px 2px;
+        }
+        
+        .bolt-stack-visual {
+            max-width: 200px;
+            min-width: 120px;
+            height: 60px;
+            background: linear-gradient(180deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            font-weight: 600;
+            color: var(--gray-800);
+            border-radius: 4px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .washer-visual {
+            width: 28px;
+            height: 4px;
+            background-color: #888;
+            position: relative;
+            border-radius: 3px;
+        }
+        
+        .nut-visual {
+            width: 28px;
+            height: 14px;
+            background-color: #555;
+            position: relative;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .thread-visual {
+            width: 12px;
+            background-color: #777;
+            position: relative;
+            border-radius: 0 0 2px 2px;
+        }
+        
+        .bolt-label {
+            position: absolute;
+            font-size: 0.7rem;
+            color: var(--gray-700);
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .bolt-label.top {
+            top: -18px;
+        }
+        
+        .bolt-label.bottom {
+            bottom: -18px;
+        }
+        
+        .bolt-label.right {
+            right: -60px;
+            width: 50px;
+            text-align: left;
+        }
+        
+        .bolt-label.left {
+            left: -60px;
+            width: 50px;
+            text-align: right;
+        }
+        
+        .bolt-measurement {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .bolt-measurement-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            border-top: 2px dashed var(--primary);
+        }
+        
+        .bolt-measurement-arrow {
+            position: absolute;
+            height: 8px;
+            width: 2px;
+            background-color: var(--primary);
+        }
+        
+        .bolt-measurement-arrow.left {
+            left: 0;
+        }
+        
+        .bolt-measurement-arrow.right {
+            right: 0;
+        }
+        
+        .bolt-measurement-arrow:before, .bolt-measurement-arrow:after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .bolt-measurement-arrow.left:before {
+            top: 0;
+            left: 0;
+            transform: rotate(-45deg);
+            transform-origin: left top;
+        }
+        
+        .bolt-measurement-arrow.left:after {
+            bottom: 0;
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: left bottom;
+        }
+        
+        .bolt-measurement-arrow.right:before {
+            top: 0;
+            right: 0;
+            transform: rotate(45deg);
+            transform-origin: right top;
+        }
+        
+        .bolt-measurement-arrow.right:after {
+            bottom: 0;
+            right: 0;
+            transform: rotate(-45deg);
+            transform-origin: right bottom;
+        }
+        
+        .bolt-measurement-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 0 8px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+        }
+        
+        .bolt-details {
+            display: flex;
+            background-color: white;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .bolt-details-section {
+            flex: 1;
+            padding: 0 0.5rem;
+        }
+        
+        .bolt-details-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            color: var(--gray-700);
+        }
+        
+        .bolt-details-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 0.15rem 0;
+        }
+        
+        .bolt-details-label {
+            color: var(--gray-700);
+        }
+        
+        .bolt-details-value {
+            font-weight: 600;
+            font-family: monospace;
+        }
+        
+        /* FRC gameplay section */
+        .frc-gameplay {
+            margin-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+            padding-top: 1rem;
+        }
+        
+        .scenario-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .scenario-badge {
+            background-color: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 1rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .scenario-badge:hover, .scenario-badge.active {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+        
+        .scenario-badge.active {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>FRC Bolt Selection Tool</h1>
+            <p class="app-description">
+                Calculate bolt requirements for material stacks, visualize stress levels, 
+                and get recommendations for proper bolt sizes and lengths for FRC applications.
+            </p>
+        </header>
+        
+        <div class="app-layout">
+            <div class="inputs-section">
+                <div class="card">
+                    <h2 class="card-title">Material Stack</h2>
+                    <div class="form-group">
+                        <label for="material-type">Material Type</label>
+                        <select id="material-type">
+                            <option value="">Select a material</option>
+                            <option value="aluminum-plate-1/8">Aluminum Plate (1/8")</option>
+                            <option value="aluminum-plate-1/4">Aluminum Plate (1/4")</option>
+                            <option value="steel-plate-1/16">Steel Plate (1/16")</option>
+                            <option value="steel-plate-1/8">Steel Plate (1/8")</option>
+                            <option value="box-tube-1x1">Box Tube 1"x1" (1" height)</option>
+                            <option value="box-tube-2x1">Box Tube 2"x1" (1" height)</option>
+                            <option value="c-channel-1x2">C-Channel 1"x2" (1" height)</option>
+                            <option value="polycarbonate-1/8">Polycarbonate (1/8")</option>
+                            <option value="polycarbonate-1/4">Polycarbonate (1/4")</option>
+                            <option value="custom">Custom Material</option>
+                        </select>
+                    </div>
+                    
+                    <div id="custom-material-inputs" style="display: none;">
+                        <div class="form-group">
+                            <label for="custom-material-name">Custom Material Name</label>
+                            <input type="text" id="custom-material-name" placeholder="Enter material name">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-material-thickness">Thickness (inches)</label>
+                            <input type="number" id="custom-material-thickness" step="0.001" min="0.001" placeholder="Enter thickness in inches">
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="add-material" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            Add Material
+                        </button>
+                    </div>
+                    
+                    <div class="material-stack" id="material-stack">
+                        <div class="bolt-visualization" id="bolt-viz" style="display: none;">
+                            <div class="bolt-head"></div>
+                            <div class="bolt-nut"></div>
+                        </div>
+                        <div class="material-stack-empty" id="stack-empty">
+                            Add materials to build your stack
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <div class="stack-info">
+                            Total Stack Height: <span id="stack-height">0</span> inches
+                        </div>
+                        <button id="clear-stack" class="btn btn-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            Clear Stack
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">Load Parameters</h2>
+                    <div class="form-group">
+                        <label for="total-load">Total Load (pounds)</label>
+                        <input type="number" id="total-load" min="0" placeholder="Enter total load">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="safety-factor">Safety Factor</label>
+                            <input type="number" id="safety-factor" min="1" step="0.1" value="1.5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bolt-count">Number of Bolts</label>
+                            <input type="number" id="bolt-count" min="1" value="4">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bolt-size">Bolt Size</label>
+                            <select id="bolt-size">
+                                <option value="4-40">4-40</option>
+                                <option value="6-32">6-32</option>
+                                <option value="8-32">8-32</option>
+                                <option value="10-24">10-24</option>
+                                <option value="10-32">10-32</option>
+                                <option value="1/4-20" selected>1/4-20</option>
+                                <option value="5/16-18">5/16-18</option>
+                                <option value="3/8-16">3/8-16</option>
+                                <option value="1/2-13">1/2-13</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="load-type">Load Type</label>
+                            <select id="load-type">
+                                <option value="shear">Shear</option>
+                                <option value="tension">Tension</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="hardware-options">
+                        <div class="hardware-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                            Hardware Options
+                        </div>
+                        
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="use-washers" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span>Use Washers</span>
+                        </div>
+                        
+                        <div id="washer-options">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="washer-count">Washers per Side</label>
+                                    <select id="washer-count">
+                                        <option value="1" selected>1 Washer</option>
+                                        <option value="2">2 Washers</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="washer-type">Washer Type</label>
+                                    <select id="washer-type">
+                                        <option value="standard" selected>Standard</option>
+                                        <option value="fender">Fender (wide)</option>
+                                        <option value="lock">Lock Washer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="thread-clearance">Thread Clearance (inches)</label>
+                            <select id="thread-clearance">
+                                <option value="0.0625">1/16" (0.0625")</option>
+                                <option value="0.125" selected>1/8" (0.125")</option>
+                                <option value="0.1875">3/16" (0.1875")</option>
+                                <option value="0.25">1/4" (0.25")</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="frc-gameplay">
+                        <label>FRC Game Application</label>
+                        <div class="scenario-badges">
+                            <div class="scenario-badge" data-factor="1.0">Normal Use</div>
+                            <div class="scenario-badge" data-factor="1.5">Moderate Impacts</div>
+                            <div class="scenario-badge" data-factor="2.0">Heavy Defense</div>
+                            <div class="scenario-badge" data-factor="2.5">Climbing/Lifting</div>
+                            <div class="scenario-badge" data-factor="3.0">Extreme Stress</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group" style="margin-top: 1.5rem;">
+                        <button id="calculate" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
+                            </svg>
+                            Calculate
+                        </button>
+                        <button id="reset-all" class="btn btn-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                            </svg>
+                            Reset All
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="card">
+                    <h2 class="card-title">Bolt Stress Analysis</h2>
+                    
+                    <div class="progress-container" id="stress-indicator">
+                        <div class="progress-bar" id="stress-bar"></div>
+                        <div class="progress-label" id="stress-label">0%</div>
+                        <div class="tooltip" id="stress-tooltip">Load: 0 lbs | Allowable: 0 lbs</div>
+                    </div>
+                    
+                    <table class="results-table">
+                        <tr>
+                            <td>Load per Bolt:</td>
+                            <td id="load-per-bolt">-</td>
+                        </tr>
+                        <tr>
+                            <td>Allowable Load per Bolt:</td>
+                            <td id="allowable-load">-</td>
+                        </tr>
+                        <tr>
+                            <td>Total Stack Height:</td>
+                            <td id="result-stack-height">-</td>
+                        </tr>
+                        <tr>
+                            <td>Safety Status:</td>
+                            <td id="safety-status">-</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="bolt-recommendation" id="bolt-recommendation" style="display: none;">
+                        <div class="bolt-recommendation-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Recommended Bolt
+                        </div>
+                        
+                        <div class="bolt-specification" id="bolt-size-recommendation">
+                            1/4-20 x 1.5"
+                        </div>
+                        
+                        <div class="bolt-visual-container">
+                            <div class="bolt-visual">
+                                <div class="bolt-visual-item">
+                                    <div class="bolt-head-visual"></div>
+                                    <div class="bolt-label top">Head</div>
+                                </div>
+                                <div class="bolt-visual-item" id="bolt-stack-visual">
+                                    <div class="bolt-shaft-visual" id="bolt-shaft-top"></div>
+                                    <div class="bolt-stack-visual" id="stack-material-visual">Stack</div>
+                                    <div class="bolt-shaft-visual" id="bolt-shaft-bottom"></div>
+                                </div>
+                                <div class="bolt-visual-item" id="washer-visual-container">
+                                    <div class="washer-visual" id="washer-visual"></div>
+                                    <div class="bolt-label bottom">Washer</div>
+                                </div>
+                                <div class="bolt-visual-item">
+                                    <div class="nut-visual" id="nut-visual"></div>
+                                    <div class="bolt-label bottom">Nut</div>
+                                </div>
+                                <div class="bolt-visual-item">
+                                    <div class="thread-visual" id="thread-visual"></div>
+                                    <div class="bolt-label bottom">Thread</div>
+                                </div>
+                                
+                                <div class="bolt-measurement">
+                                    <div class="bolt-measurement-line"></div>
+                                    <div class="bolt-measurement-arrow left"></div>
+                                    <div class="bolt-measurement-arrow right"></div>
+                                    <div class="bolt-measurement-label" id="total-bolt-length">1.5"</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bolt-details">
+                            <div class="bolt-details-section">
+                                <div class="bolt-details-title">Stack Measurements</div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Stack Height:</span>
+                                    <span class="bolt-details-value" id="stack-only-height">0.500"</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Washers:</span>
+                                    <span class="bolt-details-value" id="washer-height">0.060"</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Nut:</span>
+                                    <span class="bolt-details-value" id="nut-height">0.250"</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Thread:</span>
+                                    <span class="bolt-details-value" id="thread-height">0.125"</span>
+                                </div>
+                            </div>
+                            <div class="bolt-details-section">
+                                <div class="bolt-details-title">Length Calculation</div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Required Length:</span>
+                                    <span class="bolt-details-value" id="required-length">0.935"</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Closest Standard:</span>
+                                    <span class="bolt-details-value" id="closest-length">1.000"</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Thread Size:</span>
+                                    <span class="bolt-details-value" id="thread-size">1/4-20</span>
+                                </div>
+                                <div class="bolt-details-item">
+                                    <span class="bolt-details-label">Diameter:</span>
+                                    <span class="bolt-details-value" id="bolt-diameter">0.250"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">Bolt Selection Guide</h2>
+                    <p>
+                        This tool helps you select the right bolts for your FRC robotics application. 
+                        Here's how to use it:
+                    </p>
+                    <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <li>Add materials to create your stack</li>
+                        <li>Enter the total load that will be applied</li>
+                        <li>Set your safety factor (1.5 is recommended)</li>
+                        <li>Enter the number of bolts sharing the load</li>
+                        <li>Select the bolt size you want to use</li>
+                        <li>Configure hardware options (washers, clearance)</li>
+                        <li>Choose an FRC game application scenario</li>
+                        <li>Click "Calculate" to see results</li>
+                    </ol>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Bolt Strength Reference</h3>
+                        <table class="results-table">
+                            <tr>
+                                <td>Bolt Size</td>
+                                <td>Shear Strength (lbs)</td>
+                            </tr>
+                            <tr>
+                                <td>4-40</td>
+                                <td>140</td>
+                            </tr>
+                            <tr>
+                                <td>6-32</td>
+                                <td>320</td>
+                            </tr>
+                            <tr>
+                                <td>8-32</td>
+                                <td>580</td>
+                            </tr>
+                            <tr>
+                                <td>10-24</td>
+                                <td>800</td>
+                            </tr>
+                            <tr>
+                                <td>10-32</td>
+                                <td>900</td>
+                            </tr>
+                            <tr>
+                                <td>1/4-20</td>
+                                <td>1,800</td>
+                            </tr>
+                            <tr>
+                                <td>5/16-18</td>
+                                <td>2,900</td>
+                            </tr>
+                            <tr>
+                                <td>3/8-16</td>
+                                <td>4,200</td>
+                            </tr>
+                            <tr>
+                                <td>1/2-13</td>
+                                <td>7,600</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Define materials database
+        const materials = {
+            "aluminum-plate-1/8": { name: "Aluminum Plate (1/8\")", thickness: 0.125, color: "#D4D7D9" },
+            "aluminum-plate-1/4": { name: "Aluminum Plate (1/4\")", thickness: 0.25, color: "#D4D7D9" },
+            "steel-plate-1/16": { name: "Steel Plate (1/16\")", thickness: 0.0625, color: "#9CA3AF" },
+            "steel-plate-1/8": { name: "Steel Plate (1/8\")", thickness: 0.125, color: "#9CA3AF" },
+            "box-tube-1x1": { name: "Box Tube 1\"x1\"", thickness: 1.0, color: "#FBBF24" },
+            "box-tube-2x1": { name: "Box Tube 2\"x1\"", thickness: 1.0, color: "#FBBF24" },
+            "c-channel-1x2": { name: "C-Channel 1\"x2\"", thickness: 1.0, color: "#60A5FA" },
+            "polycarbonate-1/8": { name: "Polycarbonate (1/8\")", thickness: 0.125, color: "rgba(52, 211, 153, 0.6)" },
+            "polycarbonate-1/4": { name: "Polycarbonate (1/4\")", thickness: 0.25, color: "rgba(52, 211, 153, 0.6)" }
+        };
+        
+        // Define bolt strength data (in pounds)
+        const boltStrength = {
+            "4-40": { shear: 140, tension: 350, diameter: 0.112 },
+            "6-32": { shear: 320, tension: 800, diameter: 0.138 },
+            "8-32": { shear: 580, tension: 1450, diameter: 0.164 },
+            "10-24": { shear: 800, tension: 2000, diameter: 0.19 },
+            "10-32": { shear: 900, tension: 2250, diameter: 0.19 },
+            "1/4-20": { shear: 1800, tension: 4500, diameter: 0.25 },
+            "5/16-18": { shear: 2900, tension: 7250, diameter: 0.3125 },
+            "3/8-16": { shear: 4200, tension: 10500, diameter: 0.375 },
+            "1/2-13": { shear: 7600, tension: 19000, diameter: 0.5 }
+        };
+        
+        // Define washer thicknesses
+        const washerThicknesses = {
+            "standard": 0.06,
+            "fender": 0.08,
+            "lock": 0.05
+        };
+        
+        // Define nut heights
+        const nutHeights = {
+            "4-40": 0.12,
+            "6-32": 0.14,
+            "8-32": 0.16,
+            "10-24": 0.18,
+            "10-32": 0.18,
+            "1/4-20": 0.22,
+            "5/16-18": 0.28,
+            "3/8-16": 0.33,
+            "1/2-13": 0.45
+        };
+        
+        // Common bolt lengths in inches
+        const commonBoltLengths = [0.5, 0.625, 0.75, 0.875, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4, 4.5, 5];
+        
+        // Global variables
+        let materialStack = [];
+        let stackHeight = 0;
+        let gameplayFactor = 1.0;  // Default gameplay factor
+        
+        // DOM Elements
+        const materialTypeSelect = document.getElementById('material-type');
+        const customMaterialInputs = document.getElementById('custom-material-inputs');
+        const customMaterialName = document.getElementById('custom-material-name');
+        const customMaterialThickness = document.getElementById('custom-material-thickness');
+        const addMaterialBtn = document.getElementById('add-material');
+        const materialStackEl = document.getElementById('material-stack');
+        const stackEmptyEl = document.getElementById('stack-empty');
+        const stackHeightDisplay = document.getElementById('stack-height');
+        const clearStackBtn = document.getElementById('clear-stack');
+        
+        const totalLoadInput = document.getElementById('total-load');
+        const safetyFactorInput = document.getElementById('safety-factor');
+        const boltCountInput = document.getElementById('bolt-count');
+        const boltSizeSelect = document.getElementById('bolt-size');
+        const loadTypeSelect = document.getElementById('load-type');
+        const useWashersToggle = document.getElementById('use-washers');
+        const washerOptionsDiv = document.getElementById('washer-options');
+        const washerCountSelect = document.getElementById('washer-count');
+        const washerTypeSelect = document.getElementById('washer-type');
+        const threadClearanceSelect = document.getElementById('thread-clearance');
+        const calculateBtn = document.getElementById('calculate');
+        const resetAllBtn = document.getElementById('reset-all');
+        const scenarioBadges = document.querySelectorAll('.scenario-badge');
+        
+        const stressBar = document.getElementById('stress-bar');
+        const stressLabel = document.getElementById('stress-label');
+        const stressTooltip = document.getElementById('stress-tooltip');
+        const loadPerBoltEl = document.getElementById('load-per-bolt');
+        const allowableLoadEl = document.getElementById('allowable-load');
+        const resultStackHeightEl = document.getElementById('result-stack-height');
+        const safetyStatusEl = document.getElementById('safety-status');
+        const boltViz = document.getElementById('bolt-viz');
+        
+        // Bolt recommendation elements
+        const boltRecommendationDiv = document.getElementById('bolt-recommendation');
+        const boltSizeRecommendationEl = document.getElementById('bolt-size-recommendation');
+        const stackOnlyHeightEl = document.getElementById('stack-only-height');
+        const washerHeightEl = document.getElementById('washer-height');
+        const nutHeightEl = document.getElementById('nut-height');
+        const threadHeightEl = document.getElementById('thread-height');
+        const requiredLengthEl = document.getElementById('required-length');
+        const closestLengthEl = document.getElementById('closest-length');
+        const threadSizeEl = document.getElementById('thread-size');
+        const boltDiameterEl = document.getElementById('bolt-diameter');
+        const totalBoltLengthEl = document.getElementById('total-bolt-length');
+        
+        // Bolt visualization elements
+        const stackMaterialVisual = document.getElementById('stack-material-visual');
+        const boltShaftTop = document.getElementById('bolt-shaft-top');
+        const boltShaftBottom = document.getElementById('bolt-shaft-bottom');
+        const washerVisualContainer = document.getElementById('washer-visual-container');
+        const washerVisual = document.getElementById('washer-visual');
+        const nutVisual = document.getElementById('nut-visual');
+        const threadVisual = document.getElementById('thread-visual');
+        
+        // Event listeners
+        materialTypeSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customMaterialInputs.style.display = 'block';
+            } else {
+                customMaterialInputs.style.display = 'none';
+            }
+        });
+        
+        useWashersToggle.addEventListener('change', function() {
+            washerOptionsDiv.style.display = this.checked ? 'block' : 'none';
+            washerVisualContainer.style.display = this.checked ? 'flex' : 'none';
+        });
+        
+        addMaterialBtn.addEventListener('click', addMaterial);
+        clearStackBtn.addEventListener('click', clearStack);
+        calculateBtn.addEventListener('click', calculateResults);
+        resetAllBtn.addEventListener('click', resetAll);
+        
+        // Set up scenario badges
+        scenarioBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                // Remove active class from all badges
+                scenarioBadges.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked badge
+                this.classList.add('active');
+                
+                // Set the gameplay factor
+                gameplayFactor = parseFloat(this.getAttribute('data-factor'));
+            });
+        });
+        
+        // Set default active scenario
+        scenarioBadges[0].classList.add('active');
+        
+        // Functions
+        function addMaterial() {
+            const materialType = materialTypeSelect.value;
+            
+            if (!materialType) {
+                alert('Please select a material type.');
+                return;
+            }
+            
+            let materialObj;
+            
+            if (materialType === 'custom') {
+                const name = customMaterialName.value.trim();
+                const thickness = parseFloat(customMaterialThickness.value);
+                
+                if (!name) {
+                    alert('Please enter a name for your custom material.');
+                    return;
+                }
+                
+                if (isNaN(thickness) || thickness <= 0) {
+                    alert('Please enter a valid thickness for your custom material.');
+                    return;
+                }
+                
+                materialObj = {
+                    name: name,
+                    thickness: thickness,
+                    color: getRandomColor()
+                };
+            } else {
+                materialObj = { ...materials[materialType] };
+            }
+            
+            materialStack.push(materialObj);
+            updateMaterialStack();
+            materialTypeSelect.value = '';
+            customMaterialInputs.style.display = 'none';
+            customMaterialName.value = '';
+            customMaterialThickness.value = '';
+        }
+        
+        function updateMaterialStack() {
+            // Clear the stack visualization
+            materialStackEl.innerHTML = '';
+            
+            // Add bolt visualization element back
+            materialStackEl.appendChild(boltViz);
+            
+            // Show/hide the empty state message
+            if (materialStack.length === 0) {
+                stackEmptyEl.style.display = 'flex';
+                materialStackEl.appendChild(stackEmptyEl);
+            } else {
+                stackEmptyEl.style.display = 'none';
+            }
+            
+            // Calculate stack height
+            stackHeight = materialStack.reduce((total, material) => total + material.thickness, 0);
+            stackHeightDisplay.textContent = stackHeight.toFixed(3);
+            
+            // Calculate scaling factor for visualization
+            // We'll use a minimum height of 20px per material, and scale up thicker materials
+            const scaleFactor = 40; // pixels per inch
+            
+            // Show stack from bottom to top
+            materialStack.slice().reverse().forEach((material, index) => {
+                const materialEl = document.createElement('div');
+                materialEl.className = 'material-item animated';
+                materialEl.style.backgroundColor = material.color;
+                materialEl.style.animationDelay = `${index * 0.05}s`;
+                
+                // Scale height based on thickness, with a minimum of 20px
+                const visualHeight = Math.max(20, material.thickness * scaleFactor);
+                materialEl.style.height = `${visualHeight}px`;
+                
+                // Add delete button
+                const deleteBtn = document.createElement('div');
+                deleteBtn.className = 'delete-material';
+                deleteBtn.innerHTML = '×';
+                deleteBtn.setAttribute('data-index', materialStack.length - 1 - index);
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    removeMaterial(idx);
+                });
+                
+                const labelEl = document.createElement('div');
+                labelEl.className = 'material-label';
+                labelEl.textContent = material.name;
+                
+                const thicknessEl = document.createElement('div');
+                thicknessEl.className = 'material-thickness';
+                thicknessEl.textContent = `${material.thickness}" thick`;
+                
+                materialEl.appendChild(deleteBtn);
+                materialEl.appendChild(labelEl);
+                materialEl.appendChild(thicknessEl);
+                
+                materialStackEl.appendChild(materialEl);
+            });
+            
+            // Update bolt visualization if there are materials
+            if (materialStack.length > 0) {
+                const totalStackVisualHeight = materialStack.reduce((total, material) => 
+                    total + Math.max(20, material.thickness * scaleFactor), 0);
+                
+                boltViz.style.display = 'block';
+                boltViz.style.height = `${totalStackVisualHeight}px`;
+            } else {
+                boltViz.style.display = 'none';
+            }
+        }
+        
+        function removeMaterial(index) {
+            materialStack.splice(index, 1);
+            updateMaterialStack();
+        }
+        
+        function clearStack() {
+            materialStack = [];
+            stackHeight = 0;
+            stackHeightDisplay.textContent = '0';
+            updateMaterialStack();
+        }
+        
+        function calculateResults() {
+            const totalLoad = parseFloat(totalLoadInput.value);
+            const safetyFactor = parseFloat(safetyFactorInput.value);
+            const boltCount = parseInt(boltCountInput.value);
+            const boltSize = boltSizeSelect.value;
+            const loadType = loadTypeSelect.value;
+            const useWashers = useWashersToggle.checked;
+            const washerCount = parseInt(washerCountSelect.value);
+            const washerType = washerTypeSelect.value;
+            const threadClearance = parseFloat(threadClearanceSelect.value);
+            
+            if (isNaN(totalLoad) || totalLoad < 0) {
+                alert('Please enter a valid total load.');
+                return;
+            }
+            
+            if (isNaN(safetyFactor) || safetyFactor < 1) {
+                alert('Please enter a valid safety factor (minimum 1.0).');
+                return;
+            }
+            
+            if (isNaN(boltCount) || boltCount < 1) {
+                alert('Please enter a valid number of bolts (minimum 1).');
+                return;
+            }
+            
+            // Calculate load per bolt including gameplay factor
+            const loadPerBolt = (totalLoad / boltCount) * safetyFactor * gameplayFactor;
+            
+            // Get bolt strength
+            const boltData = boltStrength[boltSize];
+            const allowableLoad = loadType === 'shear' ? boltData.shear : boltData.tension;
+            
+            // Calculate stress percentage
+            const stressPercentage = (loadPerBolt / allowableLoad) * 100;
+            
+            // Update load per bolt display
+            loadPerBoltEl.textContent = `${loadPerBolt.toFixed(2)} lbs`;
+            allowableLoadEl.textContent = `${allowableLoad.toFixed(2)} lbs`;
+            resultStackHeightEl.textContent = `${stackHeight.toFixed(3)} inches`;
+            
+            // Calculate bolt length components
+            const washerThickness = useWashers ? washerThicknesses[washerType] * washerCount : 0;
+            const nutThickness = nutHeights[boltSize] || 0.25; // Use specific nut height or default
+            
+            // Calculate the full length needed
+            const hardwareTotal = washerThickness + nutThickness + threadClearance;
+            const recommendedLength = stackHeight + hardwareTotal;
+            
+            // Find closest standard bolt length
+            const closestLength = findClosestBoltLength(recommendedLength);
+            
+            // Update safety status
+            const isSafe = stressPercentage <= 100;
+            safetyStatusEl.textContent = isSafe ? 'Safe' : 'Unsafe';
+            safetyStatusEl.className = isSafe ? 'status-safe' : 'status-unsafe';
+            
+            // Update progress bar
+            updateStressBar(stressPercentage, loadPerBolt, allowableLoad);
+            
+            // Update bolt recommendation visualization
+            updateBoltVisualization(boltSize, stackHeight, washerThickness, nutThickness, threadClearance, 
+                                   recommendedLength, closestLength, useWashers);
+        }
+        
+        function updateBoltVisualization(boltSize, stackHeight, washerThickness, nutThickness, threadClearance, 
+                                        recommendedLength, closestLength, useWashers) {
+            // Show the recommendation div
+            boltRecommendationDiv.style.display = 'block';
+            
+            // Update bolt specification
+            boltSizeRecommendationEl.textContent = `${boltSize} x ${closestLength}"`;
+            
+            // Update text values in details section
+            stackOnlyHeightEl.textContent = `${stackHeight.toFixed(3)}"`;
+            washerHeightEl.textContent = `${washerThickness.toFixed(3)}"`;
+            nutHeightEl.textContent = `${nutThickness.toFixed(3)}"`;
+            threadHeightEl.textContent = `${threadClearance.toFixed(3)}"`;
+            requiredLengthEl.textContent = `${recommendedLength.toFixed(3)}"`;
+            closestLengthEl.textContent = `${closestLength}"`;
+            threadSizeEl.textContent = boltSize;
+            boltDiameterEl.textContent = `${boltStrength[boltSize].diameter.toFixed(3)}"`;
+            
+            // Update the total bolt length measurement label
+            totalBoltLengthEl.textContent = `${closestLength}"`;
+            
+            // Update visual components
+            
+            // Stack visual height - scale for visibility
+            stackMaterialVisual.textContent = `${stackHeight.toFixed(2)}"`;
+            const stackVisualScale = Math.max(30, stackHeight * 30); // Min 30px, scale larger stacks
+            stackMaterialVisual.style.height = `${stackVisualScale}px`;
+            
+            // Shaft lengths
+            boltShaftTop.style.height = `10px`;
+            boltShaftBottom.style.height = `10px`;
+            
+            // Washer visibility
+            washerVisualContainer.style.display = useWashers ? 'flex' : 'none';
+            
+            // Thread clearance visual
+            threadVisual.style.height = `${Math.max(8, threadClearance * 30)}px`;
+            
+            // Update nut height
+            nutVisual.style.height = `${Math.max(10, nutThickness * 30)}px`;
+        }
+        
+        function updateStressBar(percentage, load, allowable) {
+            // Cap percentage at 100 for visual purposes but show real value
+            const cappedPercentage = Math.min(100, percentage);
+            stressBar.style.width = `${cappedPercentage}%`;
+            stressLabel.textContent = `${percentage.toFixed(1)}%`;
+            
+            // Color coding
+            if (percentage < 75) {
+                stressBar.style.backgroundColor = 'var(--success)';
+            } else if (percentage < 100) {
+                stressBar.style.backgroundColor = 'var(--warning)';
+            } else {
+                stressBar.style.backgroundColor = 'var(--danger)';
+            }
+            
+            // Update tooltip
+            stressTooltip.textContent = `Load: ${load.toFixed(2)} lbs | Allowable: ${allowable.toFixed(2)} lbs`;
+            
+            // Animate width transition
+            stressBar.style.transition = 'width 0.75s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease';
+        }
+        
+        function findClosestBoltLength(targetLength) {
+            // Round up to nearest 1/16"
+            const roundedUpLength = Math.ceil(targetLength * 16) / 16;
+            
+            // Find the smallest bolt length that is >= the rounded target
+            for (const length of commonBoltLengths) {
+                if (length >= roundedUpLength) {
+                    return length;
+                }
+            }
+            
+            // If all standard lengths are too short, return the longest
+            return commonBoltLengths[commonBoltLengths.length - 1];
+        }
+        
+        function resetAll() {
+            // Clear material stack
+            clearStack();
+            
+            // Reset inputs
+            totalLoadInput.value = '';
+            safetyFactorInput.value = '1.5';
+            boltCountInput.value = '4';
+            boltSizeSelect.value = '1/4-20';
+            loadTypeSelect.value = 'shear';
+            
+            // Reset hardware options
+            useWashersToggle.checked = true;
+            washerOptionsDiv.style.display = 'block';
+            washerCountSelect.value = '1';
+            washerTypeSelect.value = 'standard';
+            threadClearanceSelect.value = '0.125';
+            
+            // Reset gameplay factor
+            gameplayFactor = 1.0;
+            scenarioBadges.forEach(b => b.classList.remove('active'));
+            scenarioBadges[0].classList.add('active');
+            
+            // Reset results
+            stressBar.style.width = '0%';
+            stressLabel.textContent = '0%';
+            stressTooltip.textContent = 'Load: 0 lbs | Allowable: 0 lbs';
+            loadPerBoltEl.textContent = '-';
+            allowableLoadEl.textContent = '-';
+            resultStackHeightEl.textContent = '-';
+            safetyStatusEl.textContent = '-';
+            safetyStatusEl.className = '';
+            
+            // Hide bolt recommendation
+            boltRecommendationDiv.style.display = 'none';
+        }
+        
+        function getRandomColor() {
+            const colors = [
+                '#FCD34D', '#60A5FA', '#F87171', '#A78BFA', 
+                '#34D399', '#F472B6', '#A3E635', '#FB923C'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // Initialize
+        updateMaterialStack();
+    </script>
+</body>
+</html>
