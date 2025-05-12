@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +24,30 @@
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --radius: 0.5rem;
+            
+            /* Base variables for light mode */
+            --bg-main: var(--gray-50);
+            --bg-card: white;
+            --bg-input: var(--gray-50);
+            --text-main: var(--gray-800);
+            --text-secondary: var(--gray-700);
+            --border-color: var(--gray-200);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark-mode {
+            /* Dark mode variables */
+            --bg-main: #111827;
+            --bg-card: #1f2937;
+            --bg-input: #374151;
+            --text-main: #f3f4f6;
+            --text-secondary: #d1d5db;
+            --border-color: #4b5563;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
         }
         
         * {
@@ -34,11 +58,12 @@
         }
         
         body {
-            background-color: var(--gray-50);
-            color: var(--gray-800);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             line-height: 1.5;
             padding: 1rem;
             font-size: 0.95rem;
+            transition: background-color 0.3s, color 0.3s;
         }
         
         .container {
@@ -50,10 +75,11 @@
         header {
             text-align: center;
             margin-bottom: 2rem;
+            position: relative;
         }
         
         h1 {
-            color: var(--primary-dark);
+            color: var(--primary);
             margin-bottom: 0.5rem;
             font-weight: 700;
             font-size: 2rem;
@@ -62,7 +88,7 @@
         .app-description {
             max-width: 800px;
             margin: 0 auto;
-            color: var(--gray-700);
+            color: var(--text-secondary);
         }
         
         .app-layout {
@@ -78,13 +104,13 @@
         }
         
         .card {
-            background-color: white;
+            background-color: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-md);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            border: 1px solid var(--gray-200);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
         }
         
         .card:hover {
@@ -95,10 +121,10 @@
         .card-title {
             font-size: 1.25rem;
             font-weight: 600;
-            color: var(--gray-800);
+            color: var(--text-main);
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
         }
@@ -120,20 +146,27 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
-            color: var(--gray-700);
+            color: var(--text-secondary);
         }
         
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 0.65rem 0.75rem;
-            border: 1px solid var(--gray-300);
+            border: 1px solid var(--border-color);
             border-radius: 0.375rem;
             font-size: 0.95rem;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            background-color: var(--gray-50);
+            transition: border-color 0.15s, box-shadow 0.15s, background-color 0.3s, color 0.3s;
+            background-color: var(--bg-input);
+            color: var(--text-main);
         }
         
-        input:focus, select:focus {
+        textarea {
+            min-height: 120px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-light);
@@ -174,6 +207,18 @@
             transform: translateY(0);
         }
         
+        .btn-secondary {
+            background-color: var(--gray-200);
+            color: var(--text-main);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--gray-300);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        
         .btn-danger {
             background-color: var(--danger);
             color: white;
@@ -188,7 +233,7 @@
         
         .material-stack {
             min-height: 200px;
-            border: 1px solid var(--gray-300);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 1rem;
             margin-top: 1rem;
@@ -196,7 +241,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            background-color: var(--gray-50);
+            background-color: var(--bg-input);
             transition: all 0.2s ease;
         }
         
@@ -209,7 +254,7 @@
             align-items: center;
             justify-content: center;
             height: 200px;
-            color: var(--gray-700);
+            color: var(--text-secondary);
             font-style: italic;
         }
         
@@ -236,12 +281,12 @@
         .material-label {
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--gray-800);
+            color: var(--text-main);
         }
         
         .material-thickness {
             font-size: 0.75rem;
-            color: var(--gray-700);
+            color: var(--text-secondary);
             margin-top: 0.25rem;
         }
         
@@ -281,12 +326,12 @@
         .progress-container {
             width: 100%;
             height: 24px;
-            background-color: var(--gray-200);
+            background-color: var(--bg-input);
             border-radius: 0.375rem;
             margin: 1.5rem 0;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 3px var(--shadow-color);
         }
         
         .progress-bar {
@@ -353,12 +398,13 @@
         
         .results-table td {
             padding: 0.75rem 0.5rem;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
         }
         
         .results-table td:first-child {
             font-weight: 500;
-            color: var(--gray-700);
+            color: var(--text-secondary);
         }
         
         .results-table td:last-child {
@@ -406,17 +452,19 @@
         }
         
         .stack-info {
-            background-color: var(--gray-100);
+            background-color: var(--bg-input);
             padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
             font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
+            color: var(--text-secondary);
         }
         
         .stack-info span {
             font-weight: 600;
             margin-left: 0.25rem;
+            color: var(--text-main);
         }
         
         .button-group {
@@ -454,7 +502,7 @@
             align-items: center;
             margin-right: 0.75rem;
             padding: 0.25rem 0.5rem;
-            background-color: var(--gray-100);
+            background-color: var(--bg-input);
             border-radius: 0.375rem;
             font-size: 0.75rem;
             font-weight: 500;
@@ -553,10 +601,14 @@
             margin-bottom: 1.5rem;
         }
         
+        .dark-mode .hardware-options {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
         .hardware-title {
             font-weight: 600;
             margin-bottom: 0.75rem;
-            color: var(--primary-dark);
+            color: var(--primary);
             display: flex;
             align-items: center;
         }
@@ -576,7 +628,7 @@
         
         .bolt-recommendation-title {
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--primary);
             margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
@@ -590,7 +642,7 @@
         .bolt-specification {
             font-size: 1.25rem;
             font-weight: 700;
-            color: var(--primary-dark);
+            color: var(--primary);
             margin: 0.5rem 0 1.25rem;
             text-align: center;
             padding: 0.5rem 1rem;
@@ -648,7 +700,7 @@
             max-width: 200px;
             min-width: 120px;
             height: 60px;
-            background: linear-gradient(180deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            background: linear-gradient(180deg, #e5e7eb 0%, #d1d5db 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -657,6 +709,11 @@
             color: var(--gray-800);
             border-radius: 4px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .dark-mode .bolt-stack-visual {
+            background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+            color: var(--gray-100);
         }
         
         .washer-visual {
@@ -688,7 +745,7 @@
         .bolt-label {
             position: absolute;
             font-size: 0.7rem;
-            color: var(--gray-700);
+            color: var(--text-secondary);
             font-weight: 600;
             text-align: center;
             width: 100%;
@@ -788,16 +845,16 @@
             top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: white;
+            background-color: var(--bg-card);
             padding: 0 8px;
             font-weight: 700;
-            color: var(--primary-dark);
+            color: var(--primary);
             font-size: 0.9rem;
         }
         
         .bolt-details {
             display: flex;
-            background-color: white;
+            background-color: var(--bg-input);
             padding: 0.75rem;
             border-radius: 0.375rem;
             margin-top: 1rem;
@@ -813,7 +870,7 @@
             font-weight: 600;
             font-size: 0.85rem;
             margin-bottom: 0.25rem;
-            color: var(--gray-700);
+            color: var(--text-secondary);
         }
         
         .bolt-details-item {
@@ -824,18 +881,19 @@
         }
         
         .bolt-details-label {
-            color: var(--gray-700);
+            color: var(--text-secondary);
         }
         
         .bolt-details-value {
             font-weight: 600;
             font-family: monospace;
+            color: var(--text-main);
         }
         
         /* FRC gameplay section */
         .frc-gameplay {
             margin-top: 1rem;
-            border-top: 1px solid var(--gray-200);
+            border-top: 1px solid var(--border-color);
             padding-top: 1rem;
         }
         
@@ -847,13 +905,14 @@
         }
         
         .scenario-badge {
-            background-color: var(--gray-100);
-            border: 1px solid var(--gray-300);
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 1rem;
             padding: 0.35rem 0.75rem;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
+            color: var(--text-secondary);
         }
         
         .scenario-badge:hover, .scenario-badge.active {
@@ -865,6 +924,262 @@
         .scenario-badge.active {
             font-weight: 600;
         }
+        
+        /* Strength factor visualization */
+        .strength-factor {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(245, 158, 11, 0.1);
+            border-radius: 0.375rem;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .strength-factor-title {
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .strength-factor-title svg {
+            margin-right: 0.5rem;
+        }
+        
+        .strength-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--bg-input);
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            background-color: var(--warning);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .length-ratio-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .length-ratio-display span {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        
+        /* Custom stack input */
+        .custom-stack-input {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(59, 130, 246, 0.05);
+            border-radius: 0.375rem;
+        }
+        
+        .dark-mode .custom-stack-input {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .stack-input-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .stack-input-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .stack-input-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .stack-input-content {
+            display: none;
+        }
+        
+        .stack-input-content.active {
+            display: block;
+        }
+        
+        .custom-stack-help {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background-color: var(--bg-input);
+            border-radius: 0.25rem;
+        }
+        
+        .max-ratio-warning {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-top: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .max-ratio-warning svg {
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .option-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--gray-300);
+            color: var(--gray-800);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: help;
+            position: relative;
+        }
+        
+        .info-badge:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--gray-800);
+            color: white;
+            padding: 0.3rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        .info-badge:hover::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--gray-800);
+            z-index: 10;
+        }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .theme-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+        
+        .theme-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            transition: .4s;
+            border-radius: 22px;
+        }
+        
+        .theme-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .theme-toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:focus + .theme-toggle-slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+        
+        input:checked + .theme-toggle-slider:before {
+            transform: translateX(22px);
+        }
+        
+        .theme-toggle-slider:after {
+            content: "☀️";
+            position: absolute;
+            left: 6px;
+            bottom: 1px;
+            font-size: 10px;
+            opacity: 1;
+            transition: .4s;
+        }
+        
+        input:checked + .theme-toggle-slider:after {
+            content: "🌙";
+            left: auto;
+            right: 6px;
+            opacity: 1;
+        }
+        
+        .custom-height-input {
+            border: 2px solid var(--primary);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .dark-mode .custom-height-input {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .custom-height-input .form-group {
+            margin-bottom: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -875,56 +1190,85 @@
                 Calculate bolt requirements for material stacks, visualize stress levels, 
                 and get recommendations for proper bolt sizes and lengths for FRC applications.
             </p>
+            <div class="theme-toggle">
+                <span>Theme</span>
+                <label class="theme-toggle-switch">
+                    <input type="checkbox" id="theme-toggle-input" checked>
+                    <span class="theme-toggle-slider"></span>
+                </label>
+            </div>
         </header>
         
         <div class="app-layout">
             <div class="inputs-section">
                 <div class="card">
                     <h2 class="card-title">Material Stack</h2>
-                    <div class="form-group">
-                        <label for="material-type">Material Type</label>
-                        <select id="material-type">
-                            <option value="">Select a material</option>
-                            <option value="aluminum-plate-1/8">Aluminum Plate (1/8")</option>
-                            <option value="aluminum-plate-1/4">Aluminum Plate (1/4")</option>
-                            <option value="steel-plate-1/16">Steel Plate (1/16")</option>
-                            <option value="steel-plate-1/8">Steel Plate (1/8")</option>
-                            <option value="box-tube-1x1">Box Tube 1"x1" (1" height)</option>
-                            <option value="box-tube-2x1">Box Tube 2"x1" (1" height)</option>
-                            <option value="c-channel-1x2">C-Channel 1"x2" (1" height)</option>
-                            <option value="polycarbonate-1/8">Polycarbonate (1/8")</option>
-                            <option value="polycarbonate-1/4">Polycarbonate (1/4")</option>
-                            <option value="custom">Custom Material</option>
-                        </select>
+                    
+                    <div class="stack-input-tabs">
+                        <div class="stack-input-tab active" data-tab="individual">Build Stack</div>
+                        <div class="stack-input-tab" data-tab="custom-height">Custom Height</div>
                     </div>
                     
-                    <div id="custom-material-inputs" style="display: none;">
+                    <div class="stack-input-content active" id="individual-tab">
                         <div class="form-group">
-                            <label for="custom-material-name">Custom Material Name</label>
-                            <input type="text" id="custom-material-name" placeholder="Enter material name">
+                            <label for="material-type">Material Type</label>
+                            <select id="material-type">
+                                <option value="">Select a material</option>
+                                <option value="aluminum-plate-1/8">Aluminum Plate (1/8")</option>
+                                <option value="aluminum-plate-1/4">Aluminum Plate (1/4")</option>
+                                <option value="steel-plate-1/16">Steel Plate (1/16")</option>
+                                <option value="steel-plate-1/8">Steel Plate (1/8")</option>
+                                <option value="box-tube-1x1">Box Tube 1"x1" (1" height)</option>
+                                <option value="box-tube-2x1">Box Tube 2"x1" (1" height)</option>
+                                <option value="c-channel-1x2">C-Channel 1"x2" (1" height)</option>
+                                <option value="polycarbonate-1/8">Polycarbonate (1/8")</option>
+                                <option value="polycarbonate-1/4">Polycarbonate (1/4")</option>
+                                <option value="custom">Custom Material</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label for="custom-material-thickness">Thickness (inches)</label>
-                            <input type="number" id="custom-material-thickness" step="0.001" min="0.001" placeholder="Enter thickness in inches">
+                        
+                        <div id="custom-material-inputs" style="display: none;">
+                            <div class="form-group">
+                                <label for="custom-material-name">Custom Material Name</label>
+                                <input type="text" id="custom-material-name" placeholder="Enter material name">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-material-thickness">Thickness (inches)</label>
+                                <input type="number" id="custom-material-thickness" step="0.001" min="0.001" placeholder="Enter thickness in inches">
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button id="add-material" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Add Material
+                            </button>
+                        </div>
+                        
+                        <div class="material-stack" id="material-stack">
+                            <div class="bolt-visualization" id="bolt-viz" style="display: none;">
+                                <div class="bolt-head"></div>
+                                <div class="bolt-nut"></div>
+                            </div>
+                            <div class="material-stack-empty" id="stack-empty">
+                                Add materials to build your stack
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="button-group">
-                        <button id="add-material" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                            Add Material
-                        </button>
-                    </div>
-                    
-                    <div class="material-stack" id="material-stack">
-                        <div class="bolt-visualization" id="bolt-viz" style="display: none;">
-                            <div class="bolt-head"></div>
-                            <div class="bolt-nut"></div>
-                        </div>
-                        <div class="material-stack-empty" id="stack-empty">
-                            Add materials to build your stack
+                    <div class="stack-input-content" id="custom-height-tab">
+                        <div class="custom-height-input">
+                            <div class="form-group">
+                                <label for="custom-stack-height">Enter Stack Height (inches)</label>
+                                <input type="number" id="custom-stack-height" step="0.001" min="0" placeholder="Enter total stack height in inches">
+                            </div>
+                            <div class="form-group">
+                                <label for="custom-stack-name">Stack Description (optional)</label>
+                                <input type="text" id="custom-stack-name" placeholder="E.g., 'Aluminum frame with bumper mount'">
+                            </div>
+                            <button id="apply-custom-height" class="btn btn-primary">Apply Custom Height</button>
                         </div>
                     </div>
                     
@@ -1032,6 +1376,19 @@
                                 <option value="0.25">1/4" (0.25")</option>
                             </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="max-ratio" class="option-label">
+                                <span>Maximum Length/Diameter Ratio</span>
+                                <span class="info-badge" data-tooltip="Lower values give stronger, safer bolts">?</span>
+                            </label>
+                            <select id="max-ratio">
+                                <option value="16">Standard (16:1 max)</option>
+                                <option value="12">Competition (12:1 max)</option>
+                                <option value="8">High Impact (8:1 max)</option>
+                                <option value="6">Extreme Stress (6:1 max)</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <div class="frc-gameplay">
@@ -1066,6 +1423,15 @@
                 <div class="card">
                     <h2 class="card-title">Bolt Stress Analysis</h2>
                     
+                    <div id="max-ratio-warning" class="max-ratio-warning" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span id="max-ratio-warning-text">Warning: Selected bolt exceeds maximum length-to-diameter ratio. Consider using a thicker bolt or shorter length.</span>
+                    </div>
+                    
                     <div class="progress-container" id="stress-indicator">
                         <div class="progress-bar" id="stress-bar"></div>
                         <div class="progress-label" id="stress-label">0%</div>
@@ -1090,6 +1456,25 @@
                             <td id="safety-status">-</td>
                         </tr>
                     </table>
+                    
+                    <div class="strength-factor" id="strength-factor" style="display: none;">
+                        <div class="strength-factor-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Bolt Strength Factor
+                        </div>
+                        <p>Longer bolts lose strength as the length-to-diameter ratio increases:</p>
+                        
+                        <div class="strength-bar-container">
+                            <div class="strength-bar" id="strength-bar"></div>
+                        </div>
+                        
+                        <div class="length-ratio-display">
+                            <div>Length/Diameter Ratio: <span id="length-ratio">0:1</span></div>
+                            <div>Strength Factor: <span id="strength-factor-value">100%</span></div>
+                        </div>
+                    </div>
                     
                     <div class="bolt-recommendation" id="bolt-recommendation" style="display: none;">
                         <div class="bolt-recommendation-title">
@@ -1188,12 +1573,13 @@
                         Here's how to use it:
                     </p>
                     <ol style="margin-left: 1.5rem; margin-top: 1rem;">
-                        <li>Add materials to create your stack</li>
+                        <li>Add materials to create your stack or enter a custom height</li>
                         <li>Enter the total load that will be applied</li>
                         <li>Set your safety factor (1.5 is recommended)</li>
                         <li>Enter the number of bolts sharing the load</li>
                         <li>Select the bolt size you want to use</li>
                         <li>Configure hardware options (washers, clearance)</li>
+                        <li>Set maximum length-to-diameter ratio for your application</li>
                         <li>Choose an FRC game application scenario</li>
                         <li>Click "Calculate" to see results</li>
                     </ol>
@@ -1242,6 +1628,48 @@
                                 <td>7,600</td>
                             </tr>
                         </table>
+                        
+                        <div style="margin-top: 1.5rem;">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Length-to-Diameter Effects</h3>
+                            <p>As bolt length increases relative to diameter, strength decreases:</p>
+                            <table class="results-table" style="margin-top: 0.5rem;">
+                                <tr>
+                                    <td>Length-to-Diameter Ratio</td>
+                                    <td>Strength Factor</td>
+                                    <td>Recommended Use</td>
+                                </tr>
+                                <tr>
+                                    <td>Up to 6:1</td>
+                                    <td>100%</td>
+                                    <td>Extreme stress environments</td>
+                                </tr>
+                                <tr>
+                                    <td>8:1</td>
+                                    <td>95%</td>
+                                    <td>High impact applications</td>
+                                </tr>
+                                <tr>
+                                    <td>12:1</td>
+                                    <td>85%</td>
+                                    <td>Competition use</td>
+                                </tr>
+                                <tr>
+                                    <td>16:1</td>
+                                    <td>75%</td>
+                                    <td>Standard applications</td>
+                                </tr>
+                                <tr>
+                                    <td>20:1</td>
+                                    <td>65%</td>
+                                    <td>Light duty only</td>
+                                </tr>
+                                <tr>
+                                    <td>>20:1</td>
+                                    <td><60%</td>
+                                    <td>Not recommended for FRC</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1302,6 +1730,8 @@
         let materialStack = [];
         let stackHeight = 0;
         let gameplayFactor = 1.0;  // Default gameplay factor
+        let customStackMode = false;
+        let customStackDescription = '';
         
         // DOM Elements
         const materialTypeSelect = document.getElementById('material-type');
@@ -1314,6 +1744,19 @@
         const stackHeightDisplay = document.getElementById('stack-height');
         const clearStackBtn = document.getElementById('clear-stack');
         
+        // Theme toggle
+        const themeToggleInput = document.getElementById('theme-toggle-input');
+        
+        // Stack input tabs
+        const stackInputTabs = document.querySelectorAll('.stack-input-tab');
+        const individualTab = document.getElementById('individual-tab');
+        const customHeightTab = document.getElementById('custom-height-tab');
+        
+        // Custom height elements
+        const customStackHeightInput = document.getElementById('custom-stack-height');
+        const customStackNameInput = document.getElementById('custom-stack-name');
+        const applyCustomHeightBtn = document.getElementById('apply-custom-height');
+        
         const totalLoadInput = document.getElementById('total-load');
         const safetyFactorInput = document.getElementById('safety-factor');
         const boltCountInput = document.getElementById('bolt-count');
@@ -1324,10 +1767,13 @@
         const washerCountSelect = document.getElementById('washer-count');
         const washerTypeSelect = document.getElementById('washer-type');
         const threadClearanceSelect = document.getElementById('thread-clearance');
+        const maxRatioSelect = document.getElementById('max-ratio');
         const calculateBtn = document.getElementById('calculate');
         const resetAllBtn = document.getElementById('reset-all');
         const scenarioBadges = document.querySelectorAll('.scenario-badge');
         
+        const maxRatioWarning = document.getElementById('max-ratio-warning');
+        const maxRatioWarningText = document.getElementById('max-ratio-warning-text');
         const stressBar = document.getElementById('stress-bar');
         const stressLabel = document.getElementById('stress-label');
         const stressTooltip = document.getElementById('stress-tooltip');
@@ -1336,6 +1782,12 @@
         const resultStackHeightEl = document.getElementById('result-stack-height');
         const safetyStatusEl = document.getElementById('safety-status');
         const boltViz = document.getElementById('bolt-viz');
+        
+        // Strength factor elements
+        const strengthFactorDiv = document.getElementById('strength-factor');
+        const strengthBar = document.getElementById('strength-bar');
+        const lengthRatioEl = document.getElementById('length-ratio');
+        const strengthFactorValueEl = document.getElementById('strength-factor-value');
         
         // Bolt recommendation elements
         const boltRecommendationDiv = document.getElementById('bolt-recommendation');
@@ -1373,6 +1825,60 @@
             washerVisualContainer.style.display = this.checked ? 'flex' : 'none';
         });
         
+        // Theme toggle
+        themeToggleInput.addEventListener('change', function() {
+            document.documentElement.classList.toggle('dark-mode');
+        });
+        
+        // Stack input tabs
+        stackInputTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                stackInputTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show the corresponding content
+                const tabName = this.getAttribute('data-tab');
+                individualTab.classList.toggle('active', tabName === 'individual');
+                customHeightTab.classList.toggle('active', tabName === 'custom-height');
+            });
+        });
+        
+        // Apply custom height
+        applyCustomHeightBtn.addEventListener('click', function() {
+            const height = parseFloat(customStackHeightInput.value);
+            
+            if (isNaN(height) || height <= 0) {
+                alert('Please enter a valid stack height (greater than 0).');
+                return;
+            }
+            
+            // Switch to custom stack mode
+            customStackMode = true;
+            stackHeight = height;
+            customStackDescription = customStackNameInput.value.trim();
+            
+            // Update display
+            stackHeightDisplay.textContent = stackHeight.toFixed(3);
+            
+            // Clear the material stack visualization
+            materialStack = [];
+            
+            // Add a single custom material to visualize
+            materialStack.push({
+                name: customStackDescription || "Custom Stack",
+                thickness: height,
+                color: "#60A5FA"
+            });
+            
+            updateMaterialStack();
+            
+            // Switch back to build tab (but still in custom mode)
+            stackInputTabs[0].click();
+        });
+        
         addMaterialBtn.addEventListener('click', addMaterial);
         clearStackBtn.addEventListener('click', clearStack);
         calculateBtn.addEventListener('click', calculateResults);
@@ -1397,6 +1903,13 @@
         
         // Functions
         function addMaterial() {
+            // If in custom stack mode, switch back to regular mode
+            if (customStackMode) {
+                customStackMode = false;
+                materialStack = [];
+                stackHeight = 0;
+            }
+            
             const materialType = materialTypeSelect.value;
             
             if (!materialType) {
@@ -1452,8 +1965,11 @@
                 stackEmptyEl.style.display = 'none';
             }
             
-            // Calculate stack height
-            stackHeight = materialStack.reduce((total, material) => total + material.thickness, 0);
+            // Calculate stack height (only if not in custom mode)
+            if (!customStackMode) {
+                stackHeight = materialStack.reduce((total, material) => total + material.thickness, 0);
+            }
+            
             stackHeightDisplay.textContent = stackHeight.toFixed(3);
             
             // Calculate scaling factor for visualization
@@ -1471,16 +1987,19 @@
                 const visualHeight = Math.max(20, material.thickness * scaleFactor);
                 materialEl.style.height = `${visualHeight}px`;
                 
-                // Add delete button
-                const deleteBtn = document.createElement('div');
-                deleteBtn.className = 'delete-material';
-                deleteBtn.innerHTML = '×';
-                deleteBtn.setAttribute('data-index', materialStack.length - 1 - index);
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const idx = parseInt(e.target.getAttribute('data-index'));
-                    removeMaterial(idx);
-                });
+                // Add delete button (only if not in custom mode)
+                if (!customStackMode) {
+                    const deleteBtn = document.createElement('div');
+                    deleteBtn.className = 'delete-material';
+                    deleteBtn.innerHTML = '×';
+                    deleteBtn.setAttribute('data-index', materialStack.length - 1 - index);
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(e.target.getAttribute('data-index'));
+                        removeMaterial(idx);
+                    });
+                    materialEl.appendChild(deleteBtn);
+                }
                 
                 const labelEl = document.createElement('div');
                 labelEl.className = 'material-label';
@@ -1490,7 +2009,6 @@
                 thicknessEl.className = 'material-thickness';
                 thicknessEl.textContent = `${material.thickness}" thick`;
                 
-                materialEl.appendChild(deleteBtn);
                 materialEl.appendChild(labelEl);
                 materialEl.appendChild(thicknessEl);
                 
@@ -1510,6 +2028,8 @@
         }
         
         function removeMaterial(index) {
+            if (customStackMode) return; // Don't allow removal in custom mode
+            
             materialStack.splice(index, 1);
             updateMaterialStack();
         }
@@ -1518,6 +2038,10 @@
             materialStack = [];
             stackHeight = 0;
             stackHeightDisplay.textContent = '0';
+            customStackMode = false;
+            customStackDescription = '';
+            customStackHeightInput.value = '';
+            customStackNameInput.value = '';
             updateMaterialStack();
         }
         
@@ -1531,6 +2055,7 @@
             const washerCount = parseInt(washerCountSelect.value);
             const washerType = washerTypeSelect.value;
             const threadClearance = parseFloat(threadClearanceSelect.value);
+            const maxRatio = parseInt(maxRatioSelect.value);
             
             if (isNaN(totalLoad) || totalLoad < 0) {
                 alert('Please enter a valid total load.');
@@ -1547,22 +2072,12 @@
                 return;
             }
             
-            // Calculate load per bolt including gameplay factor
-            const loadPerBolt = (totalLoad / boltCount) * safetyFactor * gameplayFactor;
+            if (stackHeight <= 0) {
+                alert('Please add materials to the stack or enter a custom stack height.');
+                return;
+            }
             
-            // Get bolt strength
-            const boltData = boltStrength[boltSize];
-            const allowableLoad = loadType === 'shear' ? boltData.shear : boltData.tension;
-            
-            // Calculate stress percentage
-            const stressPercentage = (loadPerBolt / allowableLoad) * 100;
-            
-            // Update load per bolt display
-            loadPerBoltEl.textContent = `${loadPerBolt.toFixed(2)} lbs`;
-            allowableLoadEl.textContent = `${allowableLoad.toFixed(2)} lbs`;
-            resultStackHeightEl.textContent = `${stackHeight.toFixed(3)} inches`;
-            
-            // Calculate bolt length components
+            // Calculate washer thickness
             const washerThickness = useWashers ? washerThicknesses[washerType] * washerCount : 0;
             const nutThickness = nutHeights[boltSize] || 0.25; // Use specific nut height or default
             
@@ -1573,21 +2088,118 @@
             // Find closest standard bolt length
             const closestLength = findClosestBoltLength(recommendedLength);
             
+            // Calculate length-to-diameter ratio
+            const boltDiameter = boltStrength[boltSize].diameter;
+            const lengthToRatio = closestLength / boltDiameter;
+            
+            // Check if the bolt exceeds the maximum ratio
+            const exceedsMaxRatio = lengthToRatio > maxRatio;
+            
+            // Show or hide max ratio warning
+            maxRatioWarning.style.display = exceedsMaxRatio ? 'flex' : 'none';
+            
+            if (exceedsMaxRatio) {
+                // Calculate what bolt size would be needed
+                let recommendedSize = null;
+                for (const size in boltStrength) {
+                    const dia = boltStrength[size].diameter;
+                    if (closestLength / dia <= maxRatio) {
+                        recommendedSize = size;
+                        break;
+                    }
+                }
+                
+                // Update warning text
+                if (recommendedSize) {
+                    maxRatioWarningText.textContent = `Warning: Selected bolt exceeds maximum ${maxRatio}:1 length-to-diameter ratio. Consider using a ${recommendedSize} bolt or thicker.`;
+                } else {
+                    maxRatioWarningText.textContent = `Warning: Selected bolt exceeds maximum ${maxRatio}:1 length-to-diameter ratio. Consider using a thicker bolt or shorter length.`;
+                }
+            }
+            
+            // Calculate strength reduction factor based on length-to-diameter ratio - more aggressive
+            // Using updated model where:
+            // - Up to 6:1 ratio maintains 100% strength for extreme stress
+            // - 8:1 ratio reduces to 95% strength for high impact
+            // - 12:1 ratio reduces to 85% strength for competition
+            // - 16:1 ratio reduces to 75% strength for standard use
+            // - 20:1 ratio reduces to 65% strength
+            let strengthFactor = 1.0; // Default 100%
+            
+            if (lengthToRatio > 6) {
+                if (lengthToRatio <= 8) {
+                    // Linear interpolation between 6:1 (100%) and 8:1 (95%)
+                    strengthFactor = 1.0 - (lengthToRatio - 6) * (0.05 / 2);
+                } else if (lengthToRatio <= 12) {
+                    // Linear interpolation between 8:1 (95%) and 12:1 (85%)
+                    strengthFactor = 0.95 - (lengthToRatio - 8) * (0.1 / 4);
+                } else if (lengthToRatio <= 16) {
+                    // Linear interpolation between 12:1 (85%) and 16:1 (75%)
+                    strengthFactor = 0.85 - (lengthToRatio - 12) * (0.1 / 4);
+                } else if (lengthToRatio <= 20) {
+                    // Linear interpolation between 16:1 (75%) and 20:1 (65%)
+                    strengthFactor = 0.75 - (lengthToRatio - 16) * (0.1 / 4);
+                } else {
+                    // Beyond 20:1, we cap at 60% strength, which is more conservative
+                    strengthFactor = 0.60;
+                }
+            }
+            
+            // Get base bolt strength and apply the strength factor
+            const baseBoltStrength = loadType === 'shear' ? boltStrength[boltSize].shear : boltStrength[boltSize].tension;
+            const adjustedBoltStrength = baseBoltStrength * strengthFactor;
+            
+            // Calculate load per bolt including gameplay factor
+            const loadPerBolt = (totalLoad / boltCount) * safetyFactor * gameplayFactor;
+            
+            // Calculate stress percentage using the adjusted strength
+            const stressPercentage = (loadPerBolt / adjustedBoltStrength) * 100;
+            
+            // Update displays
+            loadPerBoltEl.textContent = `${loadPerBolt.toFixed(2)} lbs`;
+            allowableLoadEl.textContent = `${adjustedBoltStrength.toFixed(2)} lbs`;
+            resultStackHeightEl.textContent = `${stackHeight.toFixed(3)} inches`;
+            
             // Update safety status
             const isSafe = stressPercentage <= 100;
             safetyStatusEl.textContent = isSafe ? 'Safe' : 'Unsafe';
             safetyStatusEl.className = isSafe ? 'status-safe' : 'status-unsafe';
             
             // Update progress bar
-            updateStressBar(stressPercentage, loadPerBolt, allowableLoad);
+            updateStressBar(stressPercentage, loadPerBolt, adjustedBoltStrength);
+            
+            // Update strength factor visualization
+            updateStrengthFactor(lengthToRatio, strengthFactor);
             
             // Update bolt recommendation visualization
             updateBoltVisualization(boltSize, stackHeight, washerThickness, nutThickness, threadClearance, 
-                                   recommendedLength, closestLength, useWashers);
+                                   recommendedLength, closestLength, useWashers, boltDiameter);
+        }
+        
+        function updateStrengthFactor(lengthRatio, strengthFactor) {
+            // Show the strength factor div
+            strengthFactorDiv.style.display = 'block';
+            
+            // Update text displays
+            lengthRatioEl.textContent = `${lengthRatio.toFixed(1)}:1`;
+            strengthFactorValueEl.textContent = `${(strengthFactor * 100).toFixed(0)}%`;
+            
+            // Calculate width percentage for strength bar
+            const strengthPercentage = strengthFactor * 100;
+            strengthBar.style.width = `${strengthPercentage}%`;
+            
+            // Update color based on strength factor
+            if (strengthPercentage >= 90) {
+                strengthBar.style.backgroundColor = 'var(--success)';
+            } else if (strengthPercentage >= 75) {
+                strengthBar.style.backgroundColor = 'var(--warning)';
+            } else {
+                strengthBar.style.backgroundColor = 'var(--danger)';
+            }
         }
         
         function updateBoltVisualization(boltSize, stackHeight, washerThickness, nutThickness, threadClearance, 
-                                        recommendedLength, closestLength, useWashers) {
+                                        recommendedLength, closestLength, useWashers, boltDiameter) {
             // Show the recommendation div
             boltRecommendationDiv.style.display = 'block';
             
@@ -1602,7 +2214,7 @@
             requiredLengthEl.textContent = `${recommendedLength.toFixed(3)}"`;
             closestLengthEl.textContent = `${closestLength}"`;
             threadSizeEl.textContent = boltSize;
-            boltDiameterEl.textContent = `${boltStrength[boltSize].diameter.toFixed(3)}"`;
+            boltDiameterEl.textContent = `${boltDiameter.toFixed(3)}"`;
             
             // Update the total bolt length measurement label
             totalBoltLengthEl.textContent = `${closestLength}"`;
@@ -1682,11 +2294,16 @@
             washerCountSelect.value = '1';
             washerTypeSelect.value = 'standard';
             threadClearanceSelect.value = '0.125';
+            maxRatioSelect.value = '16';
             
             // Reset gameplay factor
             gameplayFactor = 1.0;
             scenarioBadges.forEach(b => b.classList.remove('active'));
             scenarioBadges[0].classList.add('active');
+            
+            // Reset custom height inputs
+            customStackHeightInput.value = '';
+            customStackNameInput.value = '';
             
             // Reset results
             stressBar.style.width = '0%';
@@ -1698,7 +2315,9 @@
             safetyStatusEl.textContent = '-';
             safetyStatusEl.className = '';
             
-            // Hide bolt recommendation
+            // Hide strength factor and bolt recommendation
+            maxRatioWarning.style.display = 'none';
+            strengthFactorDiv.style.display = 'none';
             boltRecommendationDiv.style.display = 'none';
         }
         
